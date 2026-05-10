@@ -1,0 +1,6 @@
+[gd_scene format=3 uid="uid://skill_cleave"]
+
+[ext_resource type="Script" path="res://scripts/combat/Skill_Cleave.gd" id="1_cleave"]
+
+[node name="SkillCleave" type="Node"]
+script = ExtResource("1_cleave")
