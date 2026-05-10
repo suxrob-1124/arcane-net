@@ -1,0 +1,105 @@
+[gd_scene format=3 uid="uid://main"]
+
+[ext_resource type="Script" uid="uid://cjcb2gg60gqxw" path="res://scripts/combat/IsoCamera.gd" id="1_isocam"]
+[ext_resource type="Script" path="res://scripts/combat/Player.gd" id="2_player"]
+[ext_resource type="Script" path="res://scripts/combat/MovementComponent.gd" id="3_movement"]
+[ext_resource type="Script" path="res://scripts/combat/DashComponent.gd" id="4_dash"]
+[ext_resource type="Script" path="res://scripts/combat/AttackComponent.gd" id="5_attack"]
+[ext_resource type="PackedScene" path="res://scenes/combat/Projectile.tscn" id="6_projectile"]
+[ext_resource type="PackedScene" path="res://scenes/combat/EnemyDummy.tscn" id="7_enemy"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_floor"]
+albedo_color = Color(0.35, 0.55, 0.35, 1)
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
+material = SubResource("Mat_floor")
+size = Vector2(30, 30)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
+size = Vector3(30, 0.1, 30)
+
+[sub_resource type="StandardMaterial3D" id="Mat_target"]
+albedo_color = Color(0.85, 0.2, 0.15, 1)
+
+[sub_resource type="BoxMesh" id="BoxMesh_target"]
+material = SubResource("Mat_target")
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_target"]
+
+[sub_resource type="SphereShape3D" id="SphereShape3D_detection"]
+radius = 8.0
+
+[node name="Main" type="Node3D" unique_id=1582306279]
+
+[node name="Floor" type="StaticBody3D" parent="." unique_id=1732674819]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Floor" unique_id=1760709954]
+mesh = SubResource("PlaneMesh_floor")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=717713118]
+shape = SubResource("BoxShape3D_floor")
+
+[node name="Player" type="CharacterBody3D" parent="." unique_id=1882858988]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
+collision_layer = 2
+script = ExtResource("2_player")
+
+[node name="Visuals" type="Node3D" parent="Player" unique_id=300000001]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Player/Visuals" unique_id=775316542]
+mesh = SubResource("BoxMesh_target")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=981678426]
+shape = SubResource("BoxShape3D_target")
+
+[node name="MovementComponent" type="Node" parent="Player" unique_id=300000002]
+script = ExtResource("3_movement")
+
+[node name="DashComponent" type="Node" parent="Player" unique_id=300000003]
+script = ExtResource("4_dash")
+
+[node name="DurationTimer" type="Timer" parent="Player/DashComponent" unique_id=300000004]
+wait_time = 0.2
+one_shot = true
+
+[node name="CooldownTimer" type="Timer" parent="Player/DashComponent" unique_id=300000005]
+wait_time = 1.5
+one_shot = true
+
+[node name="IframesTimer" type="Timer" parent="Player/DashComponent" unique_id=300000006]
+wait_time = 0.25
+one_shot = true
+
+[node name="AttackComponent" type="Node3D" parent="Player" unique_id=400000001]
+script = ExtResource("5_attack")
+projectile_scene = ExtResource("6_projectile")
+
+[node name="DetectionArea" type="Area3D" parent="Player/AttackComponent" unique_id=400000002]
+monitoring = true
+monitorable = false
+collision_layer = 0
+collision_mask = 4
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Player/AttackComponent/DetectionArea" unique_id=400000003]
+shape = SubResource("SphereShape3D_detection")
+
+[node name="CooldownTimer" type="Timer" parent="Player/AttackComponent" unique_id=400000004]
+wait_time = 0.4
+one_shot = true
+
+[node name="EnemyDummy1" parent="." instance=ExtResource("7_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)
+
+[node name="EnemyDummy2" parent="." instance=ExtResource("7_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, 3)
+
+[node name="EnemyDummy3" parent="." instance=ExtResource("7_enemy")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.5, 0)
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1142096761]
+transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -0.5, 0.5, 0, 10, 0)
+
+[node name="Camera3D" type="Camera3D" parent="." unique_id=1845991574]
+current = true
+script = ExtResource("1_isocam")
+target_path = NodePath("../Player")
