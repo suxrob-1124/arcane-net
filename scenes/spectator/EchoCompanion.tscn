@@ -1,0 +1,12 @@
+[gd_scene load_steps=3 format=3 uid="uid://echo_companion"]
+
+[ext_resource type="Script" path="res://scripts/spectator/EchoCompanion.gd" id="1_echo"]
+[ext_resource type="Script" path="res://scripts/core/ManaComponent.gd" id="2_mana"]
+
+[node name="EchoCompanion" type="Node"]
+script = ExtResource("1_echo")
+
+[node name="ManaComponent" type="Node" parent="."]
+script = ExtResource("2_mana")
+max_mana = 100.0
+regen_per_minute = 8.0

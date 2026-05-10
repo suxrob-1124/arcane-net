@@ -38,6 +38,7 @@ GODOT="/Applications/Godot_mono.app/Contents/MacOS/Godot"
 |---|---|---|
 | `GameState` | `scripts/core/GameState.gd` | Режим игры (`HUB / DUNGEON / SPECTATOR`), ссылка на текущую сцену |
 | `EventBus` | `scripts/core/EventBus.gd` | Глобальные сигналы между несвязанными системами |
+| `SpectatorState` | `scripts/spectator/SpectatorState.gd` | Счётчик живых зрителей-людей, `echo_should_be_active()` |
 | `InputManager` | `scripts/core/InputManager.gd` | Платформо-зависимая обработка ввода |
 
 `InputManager` грузится последним — в `_ready()` читает `GameState.current_mode`.
@@ -49,7 +50,8 @@ GODOT="/Applications/Godot_mono.app/Contents/MacOS/Godot"
 | `scripts/combat/` | `Player`, `MovementComponent`, `DashComponent`, `IsoCamera` |
 | `scripts/progression/` | Уровни, прокачка, статы |
 | `scripts/dungeon_gen/` | Процедурная генерация подземелий |
-| `scripts/spectator/` | Режим зрителя |
+| `scripts/spectator/` | Режим зрителя; `SpectatorState` (AutoLoad), `EchoCompanion` |
+| `scripts/spectator/actions/` | Priority-действия Эха: `SpectatorAction` (base), `HealAction`, stubs |
 | `scripts/network/` | Мультиплеер |
 | `scripts/ui/` | UI-логика |
 | `scripts/data/` | Data-классы и парсинг ресурсов |
