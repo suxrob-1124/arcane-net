@@ -5,6 +5,7 @@ enum RoomType { START, COMBAT, ELITE, REWARD, BOSS }
 
 @export var type: RoomType = RoomType.COMBAT
 @export var display_name: String = ""
+@export var scene_path: String = "res://scenes/dungeon/Room.tscn"
 @export var difficulty_tier: int = 1
 @export var base_enemy_count: int = 3
 @export var possible_enemies: Array[EnemyData] = []
