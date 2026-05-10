@@ -23,6 +23,12 @@ func _ready() -> void:
 	_skill_host = get_node_or_null(skill_host_path) if not skill_host_path.is_empty() else self
 	if _skill_host == null:
 		_skill_host = self
+	EventBus.level_up_triggered.connect(_on_level_up_triggered)
+
+# --- EventBus handlers ---------------------------------------------------
+
+func _on_level_up_triggered(_new_level: int) -> void:
+	request_level_up_choice()
 
 # --- Public API ----------------------------------------------------------
 
