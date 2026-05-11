@@ -141,7 +141,7 @@ font_size = 48
 outline_size = 8
 modulate = Color(0, 1, 0, 1)
 script = ExtResource("11_hpbar")
-health = NodePath("../HealthComponent")
+health_path = NodePath("../HealthComponent")
 
 [node name="GlitchPup1" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)

@@ -1,15 +1,18 @@
 class_name PlayerHealthBar
 extends Label3D
 
-@export var health: HealthComponent
+@export var health_path: NodePath
+
+var _health: HealthComponent
 
 
 func _ready() -> void:
-	if health == null:
-		push_warning("PlayerHealthBar: health not assigned")
+	_health = get_node_or_null(health_path) as HealthComponent
+	if _health == null:
+		push_warning("PlayerHealthBar: HealthComponent not found at %s" % health_path)
 		return
-	health.health_changed.connect(_on_health_changed)
-	_on_health_changed(health.current_hp, health.max_hp)
+	_health.health_changed.connect(_on_health_changed)
+	_on_health_changed(_health.current_hp, _health.max_hp)
 
 
 func _on_health_changed(current: int, max_value: int) -> void:

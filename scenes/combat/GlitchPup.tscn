@@ -22,9 +22,13 @@ transparency = 1
 no_depth_test = true
 render_priority = 1
 
-[sub_resource type="PlaneMesh" id="PlaneMesh_telegraph"]
+[sub_resource type="CylinderMesh" id="CylinderMesh_telegraph"]
 material = SubResource("Mat_telegraph")
-size = Vector2(1.5, 1.5)
+top_radius = 0.75
+bottom_radius = 0.75
+height = 0.02
+radial_segments = 32
+rings = 1
 
 [node name="GlitchPup" type="CharacterBody3D"]
 collision_layer = 4
@@ -48,7 +52,7 @@ max_hp = 30
 visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TelegraphMarker"]
-mesh = SubResource("PlaneMesh_telegraph")
+mesh = SubResource("CylinderMesh_telegraph")
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 0.5

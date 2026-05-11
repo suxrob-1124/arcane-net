@@ -27,6 +27,10 @@ func _unhandled_input(event: InputEvent) -> void:
 
 
 func _on_player_died(_player_node: Node3D, _cause: StringName, death_position: Vector3) -> void:
+	# Detach camera from the (soon-to-be-ghost) player FIRST so it doesn't
+	# end up framing whatever enemy walks over the corpse position.
+	_freeze_camera_at(death_position)
+
 	if _player != null and _player.has_method(&"enter_ghost_state"):
 		_player.enter_ghost_state()
 	var allies := find_alive_allies()
@@ -34,11 +38,18 @@ func _on_player_died(_player_node: Node3D, _cause: StringName, death_position: V
 		EventBus.game_over.emit()
 		return
 	_allies_cache = allies
-	var origin: Vector3 = death_position if _player == null else _player.global_position
-	_current_target = _pick_nearest_ally(allies, origin)
+	_current_target = _pick_nearest_ally(allies, death_position)
 	_assign_camera_target(_current_target)
 	_is_active = true
 	SpectatorState.enter_spectator_mode()
+
+
+func _freeze_camera_at(pos: Vector3) -> void:
+	if _camera == null:
+		return
+	_camera.target = null
+	_camera.global_position = pos + _camera.offset
+	_camera.look_at(pos)
 
 
 func switch_target() -> void:
@@ -61,6 +72,8 @@ func find_alive_allies() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	for n in get_tree().get_nodes_in_group(ALLIES_GROUP):
 		if not is_instance_valid(n):
+			continue
+		if n.is_in_group(&"enemies"):
 			continue
 		if n is Node3D and _is_alive(n):
 			out.append(n)
