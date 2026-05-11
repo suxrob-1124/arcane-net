@@ -11,6 +11,9 @@
 [ext_resource type="Script" path="res://scripts/combat/HealthComponent.gd" id="9_health"]
 [ext_resource type="Script" path="res://scripts/progression/ExperienceComponent.gd" id="10_xp"]
 [ext_resource type="Script" path="res://scripts/ui/PlayerHealthBar.gd" id="11_hpbar"]
+[ext_resource type="Script" path="res://scripts/spectator/EchoCompanion.gd" id="12_echo"]
+[ext_resource type="Script" path="res://scripts/core/ManaComponent.gd" id="13_mana"]
+[ext_resource type="PackedScene" uid="uid://hud" path="res://scenes/ui/HUD.tscn" id="14_hud"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_floor"]
 albedo_color = Color(0.35, 0.55, 0.35, 1)
@@ -159,6 +162,16 @@ transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -
 current = true
 script = ExtResource("1_isocam")
 target_path = NodePath("../Player")
+
+[node name="EchoCompanion" type="Node" parent="."]
+script = ExtResource("12_echo")
+
+[node name="ManaComponent" type="Node" parent="EchoCompanion"]
+script = ExtResource("13_mana")
+
+[node name="HUD" parent="." instance=ExtResource("14_hud")]
+xp_path = NodePath("../Player/ExperienceComponent")
+mana_path = NodePath("../EchoCompanion/ManaComponent")
 
 [node name="SpectatorController" type="Node" parent="." unique_id=500000001]
 script = ExtResource("8_spectator_ctrl")

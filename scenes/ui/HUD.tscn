@@ -1,0 +1,53 @@
+[gd_scene format=3 uid="uid://hud"]
+
+[ext_resource type="Script" path="res://scripts/ui/HUD.gd" id="1_hud"]
+
+[node name="HUD" type="CanvasLayer"]
+layer = 10
+script = ExtResource("1_hud")
+
+[node name="Root" type="Control" parent="."]
+anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+mouse_filter = 2
+
+[node name="Bars" type="HBoxContainer" parent="Root"]
+anchor_left = 0.0
+anchor_top = 1.0
+anchor_right = 1.0
+anchor_bottom = 1.0
+offset_left = 8.0
+offset_top = -64.0
+offset_right = -8.0
+offset_bottom = -8.0
+
+[node name="XPBox" type="VBoxContainer" parent="Root/Bars"]
+size_flags_horizontal = 3
+
+[node name="LevelLabel" type="Label" parent="Root/Bars/XPBox"]
+text = "Lv. 1"
+
+[node name="XPBar" type="ProgressBar" parent="Root/Bars/XPBox"]
+custom_minimum_size = Vector2(0, 22)
+size_flags_horizontal = 3
+max_value = 100.0
+value = 0.0
+modulate = Color(1.0, 0.85, 0.1, 1.0)
+
+[node name="Spacer" type="Control" parent="Root/Bars"]
+custom_minimum_size = Vector2(16, 0)
+
+[node name="ManaBox" type="VBoxContainer" parent="Root/Bars"]
+size_flags_horizontal = 3
+
+[node name="ManaLabel" type="Label" parent="Root/Bars/ManaBox"]
+text = "Echo Mana"
+horizontal_alignment = 1
+
+[node name="ManaBar" type="ProgressBar" parent="Root/Bars/ManaBox"]
+custom_minimum_size = Vector2(0, 22)
+size_flags_horizontal = 3
+max_value = 100.0
+value = 100.0
+modulate = Color(0.2, 0.55, 1.0, 1.0)
