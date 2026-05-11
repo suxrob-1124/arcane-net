@@ -14,6 +14,10 @@ func before_each() -> void:
 	visuals.name = "Visuals"
 	_player.add_child(visuals)
 
+	var health := HealthComponent.new()
+	health.name = "HealthComponent"
+	_player.add_child(health)
+
 	var movement := MovementComponent.new()
 	movement.name = "MovementComponent"
 	_player.add_child(movement)

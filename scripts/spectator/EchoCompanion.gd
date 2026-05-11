@@ -48,7 +48,7 @@ func _build_context() -> Dictionary:
 
 	var highest_hp_ratio: float = 0.0
 	var highest_hp_enemy: Node = null
-	for enemy in get_tree().get_nodes_in_group(&"enemy"):
+	for enemy in get_tree().get_nodes_in_group(&"enemies"):
 		if enemy.has_method(&"get_hp_ratio"):
 			var ratio: float = enemy.get_hp_ratio()
 			if ratio > highest_hp_ratio:

@@ -7,17 +7,26 @@
 [ext_resource type="Script" path="res://scripts/combat/AttackComponent.gd" id="5_attack"]
 [ext_resource type="Script" path="res://scripts/spectator/SpectatorController.gd" id="8_spectator_ctrl"]
 [ext_resource type="PackedScene" path="res://scenes/combat/Projectile.tscn" id="6_projectile"]
-[ext_resource type="PackedScene" path="res://scenes/combat/EnemyDummy.tscn" id="7_enemy"]
+[ext_resource type="PackedScene" uid="uid://glitch_pup" path="res://scenes/combat/GlitchPup.tscn" id="7_enemy"]
+[ext_resource type="Script" path="res://scripts/combat/HealthComponent.gd" id="9_health"]
+[ext_resource type="Script" path="res://scripts/progression/ExperienceComponent.gd" id="10_xp"]
+[ext_resource type="Script" path="res://scripts/ui/PlayerHealthBar.gd" id="11_hpbar"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_floor"]
 albedo_color = Color(0.35, 0.55, 0.35, 1)
 
 [sub_resource type="PlaneMesh" id="PlaneMesh_floor"]
 material = SubResource("Mat_floor")
-size = Vector2(30, 30)
+size = Vector2(50, 50)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_floor"]
-size = Vector3(30, 0.1, 30)
+size = Vector3(50, 0.1, 50)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_ns"]
+size = Vector3(50, 2, 0.5)
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_wall_ew"]
+size = Vector3(0.5, 2, 50)
 
 [sub_resource type="StandardMaterial3D" id="Mat_target"]
 albedo_color = Color(0.85, 0.2, 0.15, 1)
@@ -40,6 +49,34 @@ mesh = SubResource("PlaneMesh_floor")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Floor" unique_id=717713118]
 shape = SubResource("BoxShape3D_floor")
 
+[node name="Wall_N" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, -25)
+collision_layer = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_N"]
+shape = SubResource("BoxShape3D_wall_ns")
+
+[node name="Wall_S" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1, 25)
+collision_layer = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_S"]
+shape = SubResource("BoxShape3D_wall_ns")
+
+[node name="Wall_E" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 25, 1, 0)
+collision_layer = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_E"]
+shape = SubResource("BoxShape3D_wall_ew")
+
+[node name="Wall_W" type="StaticBody3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -25, 1, 0)
+collision_layer = 1
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall_W"]
+shape = SubResource("BoxShape3D_wall_ew")
+
 [node name="Player" type="CharacterBody3D" parent="." unique_id=1882858988]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, 0)
 collision_layer = 2
@@ -52,6 +89,10 @@ mesh = SubResource("BoxMesh_target")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=981678426]
 shape = SubResource("BoxShape3D_target")
+
+[node name="HealthComponent" type="Node" parent="Player" unique_id=300000010]
+script = ExtResource("9_health")
+max_hp = 100
 
 [node name="MovementComponent" type="Node" parent="Player" unique_id=300000002]
 script = ExtResource("3_movement")
@@ -88,13 +129,27 @@ shape = SubResource("SphereShape3D_detection")
 wait_time = 0.4
 one_shot = true
 
-[node name="EnemyDummy1" parent="." instance=ExtResource("7_enemy")]
+[node name="ExperienceComponent" type="Node" parent="Player"]
+script = ExtResource("10_xp")
+
+[node name="PlayerHealthBar" type="Label3D" parent="Player"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 1.5, 0)
+billboard = 1
+no_depth_test = true
+text = "HP 100 / 100"
+font_size = 48
+outline_size = 8
+modulate = Color(0, 1, 0, 1)
+script = ExtResource("11_hpbar")
+health_path = NodePath("../HealthComponent")
+
+[node name="GlitchPup1" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)
 
-[node name="EnemyDummy2" parent="." instance=ExtResource("7_enemy")]
+[node name="GlitchPup2" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, 3)
 
-[node name="EnemyDummy3" parent="." instance=ExtResource("7_enemy")]
+[node name="GlitchPup3" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.5, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1142096761]

@@ -12,6 +12,14 @@ const MAX_LEVELS_PER_CALL := 100
 var current_xp: int = 0
 
 
+func _ready() -> void:
+	EventBus.enemy_died.connect(_on_enemy_died)
+
+
+func _on_enemy_died(_enemy: Node3D, _position: Vector3, xp_reward: int) -> void:
+	add_xp(xp_reward)
+
+
 func add_xp(amount: int) -> void:
 	current_xp += amount
 	xp_gained.emit(amount, current_xp, get_required_xp(current_level))

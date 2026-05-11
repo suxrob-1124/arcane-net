@@ -99,6 +99,7 @@ IMPORTANT: папки `shaders/`, `entities/`, `systems/` **не создава�
 - Тесты — `extends GutTest`, лежат в `tests/`.
 - После добавления нового `class_name` СНАЧАЛА `--headless --import`, затем тесты.
 - Юнит-тесты покрывают логику (movement vector math, dash cooldown, dungeon gen, spawner). Не покрывают визуал, тайминги, плавность.
+- IMPORTANT: Перед открытием PR с изменениями, влияющими на gameplay (combat, AI, UI, game feel, scenes), ОБЯЗАТЕЛЬНО запустить `Main.tscn`, отыграть ≥ 30 сек, проверить отладчик: ноль ERROR-логов, warning'и только из движка/addons. Юнит-тесты не покрывают game feel и интеграцию AutoLoad-сигналов. Без плейтеста PR не идёт на ревью.
 
 ## AI Rules
 - IMPORTANT: при нарушении архитектуры (например, бизнес-логика в `Player.gd` вместо компонента, или прямая связь `MovementComponent` → `DashComponent` без сигналов) — предупреждать сразу.

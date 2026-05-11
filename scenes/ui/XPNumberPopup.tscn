@@ -1,0 +1,19 @@
+[gd_scene format=3 uid="uid://xp_popup"]
+
+[ext_resource type="Script" path="res://scripts/ui/XPNumberPopup.gd" id="1_popup"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_xp"]
+font_size = 32
+font_color = Color(1.0, 0.9, 0.1, 1.0)
+outline_size = 4
+outline_color = Color(0.0, 0.0, 0.0, 1.0)
+
+[node name="XPNumberPopup" type="Node3D"]
+script = ExtResource("1_popup")
+
+[node name="Label3D" type="Label3D" parent="."]
+billboard = 1
+label_settings = SubResource("LabelSettings_xp")
+text = "+10 XP"
+font_size = 32
+modulate = Color(1, 0.9, 0.1, 1)
