@@ -1,9 +1,9 @@
-[gd_resource type="EnemyData" format=3 uid="uid://glitch_pup_data"]
+[gd_resource type="Resource" script_class="EnemyData" format=3 uid="uid://glitch_pup_data"]
 
-[ext_resource type="PackedScene" uid="uid://glitch_pup" path="res://scenes/combat/GlitchPup.tscn" id="1_scene"]
+[ext_resource type="Script" path="res://scripts/data/EnemyData.gd" id="1_script"]
 
 [resource]
-enemy_scene = ExtResource("1_scene")
+script = ExtResource("1_script")
 enemy_name = "Glitch Pup"
 enemy_id = &"glitch_pup"
 max_hp = 30

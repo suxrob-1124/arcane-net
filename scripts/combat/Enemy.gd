@@ -78,7 +78,7 @@ func _retarget() -> void:
 	_player = get_tree().get_first_node_in_group(&"player") as Node3D
 
 
-func _on_died(killer: Node) -> void:
+func _on_died(_killer: Node) -> void:
 	set_state(State.DEAD)
 	set_physics_process(false)
 

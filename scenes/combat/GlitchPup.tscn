@@ -2,6 +2,7 @@
 
 [ext_resource type="Script" path="res://scripts/combat/enemies/GlitchPup.gd" id="1_pup"]
 [ext_resource type="Script" path="res://scripts/combat/HealthComponent.gd" id="2_health"]
+[ext_resource type="Resource" uid="uid://glitch_pup_data" path="res://resources/enemies/GlitchPupData.tres" id="3_data"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_pup"]
 albedo_color = Color(0.3, 0.1, 0.85, 1.0)
@@ -28,6 +29,7 @@ size = Vector2(1.5, 1.5)
 collision_layer = 4
 collision_mask = 1
 script = ExtResource("1_pup")
+data = ExtResource("3_data")
 
 [node name="Visuals" type="Node3D" parent="."]
 
