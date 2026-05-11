@@ -30,7 +30,8 @@ func _ready() -> void:
 		push_warning(&"IsoCamera: target не задан")
 
 func _physics_process(delta: float) -> void:
-	if not target:
+	if not is_instance_valid(target):
+		target = null
 		return
 	var desired_pos: Vector3 = target.global_position + offset
 	global_position = global_position.lerp(desired_pos, 1.0 - pow(smoothing, delta))
