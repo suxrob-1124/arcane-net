@@ -8,6 +8,7 @@ func test_eventbus_signals() -> void:
 	assert_true(EventBus.has_signal(&"player_died"))
 	assert_true(EventBus.has_signal(&"room_cleared"))
 	assert_true(EventBus.has_signal(&"skill_picked"))
+	assert_true(EventBus.has_signal(&"game_over"))
 
 func test_input_manager_platform() -> void:
 	var platform: String = InputManager.get_platform()

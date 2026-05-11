@@ -5,6 +5,7 @@
 [ext_resource type="Script" path="res://scripts/combat/MovementComponent.gd" id="3_movement"]
 [ext_resource type="Script" path="res://scripts/combat/DashComponent.gd" id="4_dash"]
 [ext_resource type="Script" path="res://scripts/combat/AttackComponent.gd" id="5_attack"]
+[ext_resource type="Script" path="res://scripts/spectator/SpectatorController.gd" id="8_spectator_ctrl"]
 [ext_resource type="PackedScene" path="res://scenes/combat/Projectile.tscn" id="6_projectile"]
 [ext_resource type="PackedScene" path="res://scenes/combat/EnemyDummy.tscn" id="7_enemy"]
 
@@ -103,3 +104,8 @@ transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -
 current = true
 script = ExtResource("1_isocam")
 target_path = NodePath("../Player")
+
+[node name="SpectatorController" type="Node" parent="." unique_id=500000001]
+script = ExtResource("8_spectator_ctrl")
+camera_path = NodePath("../Camera3D")
+player_path = NodePath("../Player")
