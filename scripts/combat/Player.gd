@@ -5,6 +5,7 @@ extends CharacterBody3D
 @onready var movement: MovementComponent = $MovementComponent
 @onready var dash: DashComponent = $DashComponent
 @onready var health: HealthComponent = $HealthComponent
+@onready var attack: AttackComponent = get_node_or_null(^"AttackComponent") as AttackComponent
 
 var is_invulnerable: bool = false
 var is_dashing: bool = false
@@ -50,4 +51,6 @@ func enter_ghost_state() -> void:
 	visible = false
 	if movement != null:
 		movement.set_movement_enabled(false)
+	if attack != null:
+		attack.process_mode = Node.PROCESS_MODE_DISABLED
 	set_physics_process(false)
