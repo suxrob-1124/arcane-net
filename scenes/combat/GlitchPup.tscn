@@ -32,7 +32,7 @@ rings = 1
 
 [node name="GlitchPup" type="CharacterBody3D"]
 collision_layer = 4
-collision_mask = 1
+collision_mask = 5
 script = ExtResource("1_pup")
 data = ExtResource("3_data")
 
