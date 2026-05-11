@@ -18,9 +18,20 @@ func _ready() -> void:
 		health.max_hp = data.max_hp
 		health.current_hp = data.max_hp
 	health.died.connect(_on_died)
+	EventBus.player_died.connect(_on_player_died)
 	$RetargetTimer.timeout.connect(_retarget)
 	$RetargetTimer.start()
 	_retarget()
+
+
+func take_damage(amount: int, source: Node = null) -> void:
+	health.take_damage(amount, source)
+
+
+func _on_player_died(_p: Node3D, _cause: StringName, _pos: Vector3) -> void:
+	_player = null
+	if _state != State.DEAD:
+		set_state(State.IDLE)
 
 
 func _physics_process(delta: float) -> void:
@@ -75,7 +86,11 @@ func set_state(new_state: State) -> void:
 
 
 func _retarget() -> void:
-	_player = get_tree().get_first_node_in_group(&"player") as Node3D
+	var p: Node3D = get_tree().get_first_node_in_group(&"player") as Node3D
+	if p != null and p.has_method(&"is_alive") and not p.is_alive():
+		_player = null
+		return
+	_player = p
 
 
 func _on_died(_killer: Node) -> void:
