@@ -20,8 +20,9 @@ albedo_color = Color(1.0, 0.0, 0.0, 0.5)
 shading_mode = 2
 transparency = 1
 no_depth_test = true
+render_priority = 1
 
-[sub_resource type="QuadMesh" id="QuadMesh_telegraph"]
+[sub_resource type="PlaneMesh" id="PlaneMesh_telegraph"]
 material = SubResource("Mat_telegraph")
 size = Vector2(1.5, 1.5)
 
@@ -47,8 +48,7 @@ max_hp = 30
 visible = false
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="TelegraphMarker"]
-transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
-mesh = SubResource("QuadMesh_telegraph")
+mesh = SubResource("PlaneMesh_telegraph")
 
 [node name="AttackTimer" type="Timer" parent="."]
 wait_time = 0.5
