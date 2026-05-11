@@ -124,15 +124,15 @@ func test_all_defeated_signal() -> void:
 	assert_true(_door.is_locked,
 		"Door must be locked when encounter starts")
 
-	var enemy1: Node = _spawner.active_enemies[0]
-	EventBus.enemy_died.emit(enemy1)
+	var enemy1: Node3D = _spawner.active_enemies[0]
+	EventBus.enemy_died.emit(enemy1, Vector3.ZERO, 0)
 	assert_eq(counter[0], 0,
 		"all_enemies_defeated must not emit after first enemy death")
 	assert_true(_door.is_locked,
 		"Door must stay locked while one enemy remains")
 
-	var enemy2: Node = _spawner.active_enemies[0]
-	EventBus.enemy_died.emit(enemy2)
+	var enemy2: Node3D = _spawner.active_enemies[0]
+	EventBus.enemy_died.emit(enemy2, Vector3.ZERO, 0)
 	assert_eq(counter[0], 1,
 		"all_enemies_defeated must emit exactly once after last enemy death")
 	assert_false(_door.is_locked,

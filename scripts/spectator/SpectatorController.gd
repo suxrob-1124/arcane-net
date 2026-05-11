@@ -26,7 +26,7 @@ func _unhandled_input(event: InputEvent) -> void:
 		switch_target()
 
 
-func _on_player_died() -> void:
+func _on_player_died(_player_node: Node3D, _cause: StringName, death_position: Vector3) -> void:
 	if _player != null and _player.has_method(&"enter_ghost_state"):
 		_player.enter_ghost_state()
 	var allies := find_alive_allies()
@@ -34,8 +34,8 @@ func _on_player_died() -> void:
 		EventBus.game_over.emit()
 		return
 	_allies_cache = allies
-	_current_target = _pick_nearest_ally(allies,
-			_player.global_position if _player != null else Vector3.ZERO)
+	var origin: Vector3 = death_position if _player == null else _player.global_position
+	_current_target = _pick_nearest_ally(allies, origin)
 	_assign_camera_target(_current_target)
 	_is_active = true
 	SpectatorState.enter_spectator_mode()

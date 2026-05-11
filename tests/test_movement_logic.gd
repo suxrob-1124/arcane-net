@@ -18,6 +18,10 @@ func before_each() -> void:
 	movement.name = "MovementComponent"
 	_player.add_child(movement)
 
+	var health := HealthComponent.new()
+	health.name = "HealthComponent"
+	_player.add_child(health)
+
 	_dash = DashComponent.new()
 	_dash.name = "DashComponent"
 	_player.add_child(_dash)

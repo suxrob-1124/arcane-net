@@ -7,7 +7,9 @@
 [ext_resource type="Script" path="res://scripts/combat/AttackComponent.gd" id="5_attack"]
 [ext_resource type="Script" path="res://scripts/spectator/SpectatorController.gd" id="8_spectator_ctrl"]
 [ext_resource type="PackedScene" path="res://scenes/combat/Projectile.tscn" id="6_projectile"]
-[ext_resource type="PackedScene" path="res://scenes/combat/EnemyDummy.tscn" id="7_enemy"]
+[ext_resource type="PackedScene" uid="uid://glitch_pup" path="res://scenes/combat/GlitchPup.tscn" id="7_enemy"]
+[ext_resource type="Script" path="res://scripts/combat/HealthComponent.gd" id="9_health"]
+[ext_resource type="Script" path="res://scripts/progression/ExperienceComponent.gd" id="10_xp"]
 
 [sub_resource type="StandardMaterial3D" id="Mat_floor"]
 albedo_color = Color(0.35, 0.55, 0.35, 1)
@@ -53,6 +55,10 @@ mesh = SubResource("BoxMesh_target")
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Player" unique_id=981678426]
 shape = SubResource("BoxShape3D_target")
 
+[node name="HealthComponent" type="Node" parent="Player" unique_id=300000010]
+script = ExtResource("9_health")
+max_hp = 100
+
 [node name="MovementComponent" type="Node" parent="Player" unique_id=300000002]
 script = ExtResource("3_movement")
 
@@ -88,13 +94,13 @@ shape = SubResource("SphereShape3D_detection")
 wait_time = 0.4
 one_shot = true
 
-[node name="EnemyDummy1" parent="." instance=ExtResource("7_enemy")]
+[node name="GlitchPup1" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 2, 0.5, 2)
 
-[node name="EnemyDummy2" parent="." instance=ExtResource("7_enemy")]
+[node name="GlitchPup2" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -4, 0.5, 3)
 
-[node name="EnemyDummy3" parent="." instance=ExtResource("7_enemy")]
+[node name="GlitchPup3" parent="." instance=ExtResource("7_enemy")]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 9, 0.5, 0)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="." unique_id=1142096761]
@@ -104,6 +110,9 @@ transform = Transform3D(0.707107, -0.5, 0.5, 0, 0.707107, 0.707107, -0.707107, -
 current = true
 script = ExtResource("1_isocam")
 target_path = NodePath("../Player")
+
+[node name="ExperienceComponent" type="Node" parent="." unique_id=500000002]
+script = ExtResource("10_xp")
 
 [node name="SpectatorController" type="Node" parent="." unique_id=500000001]
 script = ExtResource("8_spectator_ctrl")

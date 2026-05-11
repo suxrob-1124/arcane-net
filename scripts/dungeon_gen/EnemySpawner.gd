@@ -81,7 +81,7 @@ func _begin_encounter() -> void:
 func _calculate_spawn_count() -> int:
 	return room_data.base_enemy_count * room_data.difficulty_tier * GameState.player_count
 
-func _on_enemy_died(enemy: Node) -> void:
+func _on_enemy_died(enemy: Node3D, _position: Vector3, _xp_reward: int) -> void:
 	active_enemies.erase(enemy)
 	if _is_spawning:
 		return

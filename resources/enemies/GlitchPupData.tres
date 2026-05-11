@@ -1,0 +1,15 @@
+[gd_resource type="EnemyData" format=3 uid="uid://glitch_pup_data"]
+
+[ext_resource type="PackedScene" uid="uid://glitch_pup" path="res://scenes/combat/GlitchPup.tscn" id="1_scene"]
+
+[resource]
+enemy_scene = ExtResource("1_scene")
+enemy_name = "Glitch Pup"
+enemy_id = &"glitch_pup"
+max_hp = 30
+move_speed = 4.0
+melee_damage = 10
+xp_reward = 10
+chase_radius = 10.0
+attack_radius = 1.5
+attack_telegraph = 0.5

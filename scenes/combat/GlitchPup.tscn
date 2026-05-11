@@ -1,0 +1,61 @@
+[gd_scene format=3 uid="uid://glitch_pup"]
+
+[ext_resource type="Script" path="res://scripts/combat/enemies/GlitchPup.gd" id="1_pup"]
+[ext_resource type="Script" path="res://scripts/combat/HealthComponent.gd" id="2_health"]
+
+[sub_resource type="StandardMaterial3D" id="Mat_pup"]
+albedo_color = Color(0.3, 0.1, 0.85, 1.0)
+
+[sub_resource type="BoxMesh" id="BoxMesh_pup"]
+material = SubResource("Mat_pup")
+size = Vector3(0.8, 0.8, 0.8)
+
+[sub_resource type="CapsuleShape3D" id="Shape_pup"]
+radius = 0.4
+height = 0.8
+
+[sub_resource type="StandardMaterial3D" id="Mat_telegraph"]
+albedo_color = Color(1.0, 0.0, 0.0, 0.5)
+shading_mode = 2
+transparency = 1
+no_depth_test = true
+
+[sub_resource type="QuadMesh" id="QuadMesh_telegraph"]
+material = SubResource("Mat_telegraph")
+size = Vector2(1.5, 1.5)
+
+[node name="GlitchPup" type="CharacterBody3D"]
+collision_layer = 4
+collision_mask = 1
+script = ExtResource("1_pup")
+
+[node name="Visuals" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Visuals"]
+mesh = SubResource("BoxMesh_pup")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="."]
+shape = SubResource("Shape_pup")
+
+[node name="HealthComponent" type="Node" parent="."]
+script = ExtResource("2_health")
+max_hp = 30
+
+[node name="TelegraphMarker" type="Node3D" parent="."]
+visible = false
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="TelegraphMarker"]
+transform = Transform3D(1, 0, 0, 0, 0, -1, 0, 1, 0, 0, 0, 0)
+mesh = SubResource("QuadMesh_telegraph")
+
+[node name="AttackTimer" type="Timer" parent="."]
+wait_time = 0.5
+one_shot = true
+
+[node name="AttackCooldown" type="Timer" parent="."]
+wait_time = 1.0
+one_shot = true
+
+[node name="RetargetTimer" type="Timer" parent="."]
+wait_time = 0.2
+one_shot = false

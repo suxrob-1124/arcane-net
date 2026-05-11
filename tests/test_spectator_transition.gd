@@ -44,7 +44,7 @@ func test_transition_to_spectator_on_ally_present() -> void:
 	var _ally := _spawn_ally()
 	watch_signals(SpectatorState)
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
 	assert_eq(GameState.current_mode, GameState.Mode.SPECTATOR,
 		"Mode must switch to SPECTATOR when allies alive")
@@ -54,7 +54,7 @@ func test_transition_to_spectator_on_ally_present() -> void:
 func test_game_over_on_no_allies() -> void:
 	watch_signals(EventBus)
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
 	assert_signal_emitted(EventBus, &"game_over",
 		"game_over must fire when no alive allies present")
@@ -65,7 +65,7 @@ func test_game_over_on_no_allies() -> void:
 func test_camera_target_assignment() -> void:
 	var ally := _spawn_ally(Vector3(3.0, 0.0, 3.0))
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
 	assert_eq(_camera_mock.target, ally,
 		"Camera target must point to the alive ally after player_died")
@@ -75,7 +75,7 @@ func test_camera_target_assignment() -> void:
 func test_player_not_freed_after_ghost() -> void:
 	var _ally := _spawn_ally()
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
 	assert_true(is_instance_valid(_player_mock),
 		"Player node must remain in tree after entering ghost state")
@@ -85,7 +85,7 @@ func test_switch_target_cycles_allies() -> void:
 	var ally1 := _spawn_ally(Vector3(1.0, 0.0, 0.0))
 	var ally2 := _spawn_ally(Vector3(5.0, 0.0, 0.0))
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 	var first_target: Node3D = _camera_mock.target
 
 	_controller.switch_target()
@@ -100,7 +100,7 @@ func test_switch_target_skips_invalid_ally() -> void:
 	var ally1 := _spawn_ally(Vector3(1.0, 0.0, 0.0))
 	var ally2 := _spawn_ally(Vector3(5.0, 0.0, 0.0))
 
-	EventBus.player_died.emit()
+	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
 	# Free the currently focused ally
 	_camera_mock.target.queue_free()
