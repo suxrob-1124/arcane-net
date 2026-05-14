@@ -1,3 +1,7 @@
+## Handles player movement in isometric space.
+## Reads WASD/gamepad input, rotates it 45° to align with the isometric view,
+## and applies velocity smoothing to the parent Player via move_and_slide().
+## DashComponent disables this component during a dash via [set_movement_enabled].
 class_name MovementComponent
 extends Node
 
@@ -8,6 +12,8 @@ extends Node
 var movement_enabled: bool = true
 
 var _player: Player
+## Pre-computed isometric rotation basis (+45° around Y).
+## Tied to IsoCamera.offset = (8, 12, 8) — recalculate if the offset changes.
 var _iso_basis: Basis
 
 func _ready() -> void:
@@ -37,6 +43,8 @@ func _physics_process(delta: float) -> void:
 func _snap_visuals(direction: Vector3) -> void:
 	_player.visuals.look_at(_player.global_position + direction, Vector3.UP)
 
+## Returns the current isometric-rotated input direction (normalized), or Vector3.ZERO when idle.
+## Called by DashComponent to determine the dash direction from live input.
 func get_input_iso_direction() -> Vector3:
 	var raw_input: Vector2 = Input.get_vector(
 		&"move_left", &"move_right", &"move_up", &"move_down"
@@ -45,5 +53,6 @@ func get_input_iso_direction() -> Vector3:
 		return Vector3.ZERO
 	return _iso_basis * Vector3(raw_input.x, 0.0, raw_input.y)
 
+## Enables or disables movement processing. Called by DashComponent at dash start/end.
 func set_movement_enabled(enabled: bool) -> void:
 	movement_enabled = enabled

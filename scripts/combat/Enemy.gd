@@ -1,6 +1,10 @@
+## Base enemy FSM. CharacterBody3D driven by an EnemyData resource.
+## `_state_attack()` is a stub — concrete enemies must override it to implement
+## telegraphed melee or ranged attacks. See `.claude/docs/combat_and_progression.md`.
 class_name Enemy
 extends CharacterBody3D
 
+## Behaviour states. Transitions live in `_state_*` methods.
 enum State { IDLE, CHASE, ATTACK, DEAD }
 
 @export var data: EnemyData
@@ -24,6 +28,7 @@ func _ready() -> void:
 	_retarget()
 
 
+## Forwards damage to HealthComponent. Single public entry point for projectile / melee hits.
 func take_damage(amount: int, source: Node = null) -> void:
 	health.take_damage(amount, source)
 
@@ -81,6 +86,7 @@ func _state_attack() -> void:
 	pass
 
 
+## Sets the FSM state. Subclasses can override to add per-transition enter logic.
 func set_state(new_state: State) -> void:
 	_state = new_state
 
@@ -147,9 +153,11 @@ func _play_death_fx(pos: Vector3) -> void:
 	cleanup.start()
 
 
+## Current HP as a fraction in `[0.0, 1.0]`. Consumed by EchoCompanion target selection.
 func get_hp_ratio() -> float:
 	return health.get_hp_ratio()
 
 
+## Returns false once HealthComponent has emitted `died`.
 func is_alive() -> bool:
 	return health.is_alive()

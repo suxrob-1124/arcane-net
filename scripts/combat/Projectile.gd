@@ -1,3 +1,6 @@
+## Linear-motion projectile fired by AttackComponent. Despawns on first hit or after `lifetime`.
+## Applies damage via `take_damage(amount, source)` if the target defines it, otherwise
+## looks for a child `HealthComponent`.
 class_name Projectile
 extends Area3D
 
@@ -12,6 +15,7 @@ func _ready() -> void:
 	area_entered.connect(_on_area_hit)
 	get_tree().create_timer(lifetime).timeout.connect(queue_free)
 
+## Sets the travel direction. Called by AttackComponent right after `instantiate()`.
 func launch(dir: Vector3) -> void:
 	direction = dir
 

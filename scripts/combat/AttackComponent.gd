@@ -1,6 +1,10 @@
+## Spawns projectiles toward the nearest enemy on `attack` input.
+## Must be a direct child of Player. Triggers Hitstop and IsoCamera shake on each fire.
+## See `.claude/docs/combat_and_progression.md` for the full attack flow.
 class_name AttackComponent
 extends Node3D
 
+## Emitted after a projectile is launched. `target` may be null when no enemy was in range.
 signal attack_performed(target: Node3D)
 
 const HITSTOP_DURATION: float = 0.05
@@ -24,9 +28,11 @@ func _unhandled_input(event: InputEvent) -> void:
 	if event.is_action_pressed(&"attack") and can_attack():
 		_perform_attack()
 
+## True while the cooldown timer is idle. Gates `_perform_attack()`.
 func can_attack() -> bool:
 	return _cooldown_timer.is_stopped()
 
+## Returns the candidate with the smallest squared distance to `origin`, or null on empty input.
 func select_nearest_target(candidates: Array[Node3D], origin: Vector3) -> Node3D:
 	var best: Node3D = null
 	var best_d2: float = INF
