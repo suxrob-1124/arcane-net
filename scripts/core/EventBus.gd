@@ -43,3 +43,5 @@ func _ready() -> void:
 		print("[EventBus] level_up_triggered: lvl=", lvl))
 	game_over.connect(func() -> void:
 		print("[EventBus] game_over"))
+	room_cleared.connect(func(rid: String) -> void:
+		print("[EventBus] room_cleared: ", rid))

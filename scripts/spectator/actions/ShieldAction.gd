@@ -7,6 +7,8 @@ extends SpectatorAction
 const SHIELD_DURATION: float = 1.5
 ## HP ratio below which Shield is suppressed so mana is reserved for HealAction.
 const HP_FLOOR: float = 0.50
+## HP ratio above which Shield is skipped — player has enough buffer, save mana for later.
+const HP_CEILING: float = 0.85
 
 
 func _init() -> void:
@@ -14,11 +16,13 @@ func _init() -> void:
 	mana_cost = 60.0
 
 
-## Returns true while boss_casting_aoe is active and HP is above HP_FLOOR.
-## Suppressed at low HP so mana stays available for HealAction.
+## Returns true while boss_casting_aoe is active and HP is in [HP_FLOOR, HP_CEILING].
+## Outside this window Shield either wastes mana (high HP) or competes with Heal (low HP).
 func can_execute(ctx: Dictionary) -> bool:
+	var hp: float = ctx.get("player_hp_ratio", 1.0)
 	return ctx.get("boss_casting_aoe", false) \
-		and ctx.get("player_hp_ratio", 1.0) >= HP_FLOOR
+		and hp >= HP_FLOOR \
+		and hp <= HP_CEILING
 
 
 ## Applies invulnerability to the player for SHIELD_DURATION seconds via add_invuln_source.

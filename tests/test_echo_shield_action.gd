@@ -24,9 +24,9 @@ func _make_mana(current: float = 100.0) -> ManaComponent:
 
 func test_shield_action_can_execute_when_aoe_active() -> void:
 	var action: ShieldAction = ShieldAction.new()
-	var ctx: Dictionary = {"player": PlayerMock.new(), "boss_casting_aoe": true}
+	var ctx: Dictionary = {"player": PlayerMock.new(), "boss_casting_aoe": true, "player_hp_ratio": 0.70}
 	assert_true(action.can_execute(ctx),
-		"ShieldAction must execute when boss_casting_aoe is true")
+		"ShieldAction must execute when boss_casting_aoe is true and HP is in [HP_FLOOR, HP_CEILING]")
 
 
 func test_shield_action_cannot_execute_when_no_aoe() -> void:
@@ -108,3 +108,47 @@ func test_echo_cannot_shield_without_mana() -> void:
 
 	assert_false(mana.can_spend(action.mana_cost),
 		"Must not be able to cast ShieldAction with insufficient mana")
+
+
+func test_shield_blocked_above_ceiling() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": true,
+		"player_hp_ratio": 0.86,
+	}
+	assert_false(action.can_execute(ctx),
+		"ShieldAction must be suppressed above HP_CEILING (0.85) to save mana")
+
+
+func test_shield_at_ceiling_boundary() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": true,
+		"player_hp_ratio": 0.85,
+	}
+	assert_true(action.can_execute(ctx),
+		"ShieldAction must execute at exactly HP_CEILING (inclusive)")
+
+
+func test_shield_at_floor_boundary() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": true,
+		"player_hp_ratio": 0.50,
+	}
+	assert_true(action.can_execute(ctx),
+		"ShieldAction must execute at exactly HP_FLOOR (inclusive)")
+
+
+func test_shield_requires_aoe_flag() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": false,
+		"player_hp_ratio": 0.70,
+	}
+	assert_false(action.can_execute(ctx),
+		"ShieldAction must not execute without boss_casting_aoe regardless of HP")

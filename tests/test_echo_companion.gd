@@ -79,6 +79,18 @@ func test_shield_selected_when_aoe_active() -> void:
 	assert_eq(action.action_name, &"shield", "ShieldAction must win when Heal is inactive")
 
 
+func test_scan_timer_uses_tick_interval() -> void:
+	var echo := _make_echo()
+	var timer: Timer = null
+	for child in echo.get_children():
+		if child is Timer:
+			timer = child as Timer
+			break
+	assert_not_null(timer, "EchoCompanion must create a Timer child in _ready()")
+	assert_almost_eq(timer.wait_time, EchoCompanion.TICK_INTERVAL, 0.001,
+		"Timer wait_time must equal TICK_INTERVAL (0.25 s)")
+
+
 func test_inactive_when_too_many_humans() -> void:
 	SpectatorState.human_spectator_count = 3
 	var echo := _make_echo()
