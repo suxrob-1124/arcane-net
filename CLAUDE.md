@@ -42,6 +42,11 @@ GODOT="/Applications/Godot_mono.app/Contents/MacOS/Godot"
 # A single test file
 "$GODOT" --path . --headless -s addons/gut/gut_cmdln.gd \
   -gdir=res://tests/ -ginclude_subdirs -gunit_test_name=test_spawner_logic.gd
+
+# Headless smoke test of Main.tscn (30 s of synthetic input). Catches SCRIPT ERROR / regressions
+# in signal cascades, AI decisions, mana economy, death-flow without needing a human at the wheel.
+# Filter for real script errors (engine-level rendering leaks at exit are noise):
+"$GODOT" --path . --headless -s tests/playtest_smoke.gd 2>&1 | grep -E "SCRIPT ERROR|push_error"
 ```
 
 ## Documentation Map

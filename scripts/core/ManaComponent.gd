@@ -5,7 +5,8 @@ class_name ManaComponent
 extends Node
 
 @export var max_mana: float = 100.0
-@export var regen_per_minute: float = 8.0
+## Per GDD 6.8: spectator mana regen is 10/min (1 unit per 6 seconds).
+@export var regen_per_minute: float = 10.0
 
 var current_mana: float
 
