@@ -47,6 +47,10 @@ GODOT="/Applications/Godot_mono.app/Contents/MacOS/Godot"
 # in signal cascades, AI decisions, mana economy, death-flow without needing a human at the wheel.
 # Filter for real script errors (engine-level rendering leaks at exit are noise):
 "$GODOT" --path . --headless -s tests/playtest_smoke.gd 2>&1 | grep -E "SCRIPT ERROR|push_error"
+
+# Visual smoke test: same 30 s run, but with rendering enabled — dumps PNG snapshots every 5 s
+# to /tmp/arcane-net-smoke/. Use to verify HUD / world state after gameplay changes.
+"$GODOT" --path . -s tests/playtest_smoke.gd && ls /tmp/arcane-net-smoke/
 ```
 
 ## Documentation Map
