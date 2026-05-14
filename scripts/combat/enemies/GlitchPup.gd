@@ -39,6 +39,7 @@ func _start_telegraph() -> void:
 	_telegraph.visible = true
 	_attack_timer.wait_time = data.attack_telegraph
 	_attack_timer.start()
+	print("[Pup#%d] TELEGRAPH started, duration=%.2f" % [get_instance_id(), data.attack_telegraph])
 	EventBus.enemy_telegraph_started.emit(self, data.attack_telegraph)
 
 

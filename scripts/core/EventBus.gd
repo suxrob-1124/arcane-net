@@ -29,7 +29,7 @@ signal game_over()
 ## Emitted when an enemy begins its attack telegraph. [duration] matches the telegraph timer length.
 signal enemy_telegraph_started(enemy: Node3D, duration: float)
 
-const DEBUG_LOG: bool = false
+const DEBUG_LOG: bool = true
 
 
 func _ready() -> void:

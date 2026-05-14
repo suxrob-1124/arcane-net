@@ -24,6 +24,8 @@ func take_damage(amount: int, source: Node = null) -> void:
 	if amount <= 0 or current_hp <= 0:
 		return
 	current_hp = max(current_hp - amount, 0)
+	if get_parent() != null and get_parent().is_in_group(&"player"):
+		print("[HP] damage=%d → %d/%d (%.0f%%)" % [amount, current_hp, max_hp, 100.0 * current_hp / max_hp])
 	damaged.emit(amount, source)
 	health_changed.emit(current_hp, max_hp)
 	if current_hp == 0:
@@ -35,6 +37,8 @@ func heal(amount: int) -> void:
 	if amount <= 0 or current_hp <= 0:
 		return
 	current_hp = min(current_hp + amount, max_hp)
+	if get_parent() != null and get_parent().is_in_group(&"player"):
+		print("[HP] heal=%d → %d/%d (%.0f%%)" % [amount, current_hp, max_hp, 100.0 * current_hp / max_hp])
 	health_changed.emit(current_hp, max_hp)
 
 

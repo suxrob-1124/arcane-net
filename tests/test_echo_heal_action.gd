@@ -26,11 +26,18 @@ func test_heal_action_can_execute_below_30pct() -> void:
 		"HealAction must be executable when HP ratio < 0.30")
 
 
+func test_heal_action_can_execute_at_exactly_30pct() -> void:
+	var action: HealAction = HealAction.new()
+	var ctx: Dictionary = {"player": PlayerMock.new(), "player_hp_ratio": 0.30}
+	assert_true(action.can_execute(ctx),
+		"HealAction must fire at exactly 30% HP (boundary is inclusive)")
+
+
 func test_heal_action_cannot_execute_above_30pct() -> void:
 	var action: HealAction = HealAction.new()
 	var ctx: Dictionary = {"player": PlayerMock.new(), "player_hp_ratio": 0.5}
 	assert_false(action.can_execute(ctx),
-		"HealAction must NOT execute when HP ratio >= 0.30")
+		"HealAction must NOT execute when HP ratio > 0.30")
 
 
 func test_heal_action_calls_heal_on_player() -> void:

@@ -8,7 +8,7 @@ func _init() -> void:
 
 
 func can_execute(ctx: Dictionary) -> bool:
-	return ctx.get("player_hp_ratio", 1.0) < 0.30
+	return ctx.get("player_hp_ratio", 1.0) <= 0.30
 
 
 func execute(ctx: Dictionary) -> void:

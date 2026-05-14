@@ -5,6 +5,8 @@
 class_name EchoCompanion
 extends Node
 
+const DEBUG_LOG: bool = true
+
 @onready var mana: ManaComponent = $ManaComponent
 
 @export var scan_interval: float = 0.5
@@ -44,6 +46,21 @@ func _on_scan() -> void:
 	if not SpectatorState.echo_should_be_active():
 		return
 	var ctx := _build_context()
+	if DEBUG_LOG:
+		print("[Echo] tick — mana=%.0f hp_ratio=%.2f aoe=%s" % [
+			mana.current_mana,
+			ctx.get("player_hp_ratio", 1.0),
+			str(ctx.get("boss_casting_aoe", false)),
+		])
+		for a in actions:
+			var can: bool = a.can_execute(ctx)
+			var afford: bool = mana.can_spend(a.mana_cost)
+			if can and afford:
+				print("  → WOULD PICK: %s (cost=%.0f)" % [a.action_name, a.mana_cost])
+			else:
+				var reason: String = "can_execute=false" if not can \
+					else "not enough mana (need %.0f have %.0f)" % [a.mana_cost, mana.current_mana]
+				print("  · SKIP %s: %s" % [a.action_name, reason])
 	var action := _pick_action(ctx)
 	if action != null:
 		_perform(action, ctx)
@@ -91,6 +108,10 @@ func _perform(action: SpectatorAction, ctx: Dictionary) -> void:
 		_is_acting = false
 		return
 	mana.spend(action.mana_cost)
+	if DEBUG_LOG:
+		print("[Echo] EXECUTE: %s (cost=%.0f, mana_left=%.0f)" % [
+			action.action_name, action.mana_cost, mana.current_mana,
+		])
 	action.execute(ctx)
 	var name_str := String(action.action_name)
 	companion_acted.emit(name_str)
