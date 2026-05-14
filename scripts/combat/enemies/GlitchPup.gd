@@ -1,3 +1,5 @@
+## Melee enemy that telegraphs its AoE stomp before dealing damage.
+## Emits enemy_telegraph_started so EchoCompanion can react with ShieldAction.
 class_name GlitchPup
 extends Enemy
 
