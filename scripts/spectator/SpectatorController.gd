@@ -36,13 +36,14 @@ func _on_player_died(_player_node: Node3D, _cause: StringName, death_position: V
 
 	if _player != null and _player.has_method(&"enter_ghost_state"):
 		_player.enter_ghost_state()
+
 	var allies := find_alive_allies()
-	if allies.is_empty():
-		EventBus.game_over.emit()
-		return
-	_allies_cache = allies
-	_current_target = _pick_nearest_ally(allies, death_position)
-	_assign_camera_target(_current_target)
+	if not allies.is_empty():
+		_allies_cache = allies
+		_current_target = _pick_nearest_ally(allies, death_position)
+		_assign_camera_target(_current_target)
+
+	# Enter spectator mode regardless — Echo activates even with no living allies.
 	_is_active = true
 	SpectatorState.enter_spectator_mode()
 

@@ -1,3 +1,5 @@
+## Melee enemy that telegraphs its AoE stomp before dealing damage.
+## Emits enemy_telegraph_started so EchoCompanion can react with ShieldAction.
 class_name GlitchPup
 extends Enemy
 
@@ -37,6 +39,8 @@ func _start_telegraph() -> void:
 	_telegraph.visible = true
 	_attack_timer.wait_time = data.attack_telegraph
 	_attack_timer.start()
+	print("[Pup#%d] TELEGRAPH started, duration=%.2f" % [get_instance_id(), data.attack_telegraph])
+	EventBus.enemy_telegraph_started.emit(self, data.attack_telegraph)
 
 
 func _on_attack_resolved() -> void:

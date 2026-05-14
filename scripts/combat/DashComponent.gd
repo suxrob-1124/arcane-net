@@ -38,7 +38,7 @@ func try_dash() -> void:
 	if _dash_dir == Vector3.ZERO:
 		_dash_dir = -_player.visuals.basis.z
 
-	_player.is_invulnerable = true
+	_player.add_invuln_source()
 	_player.is_dashing = true
 	_player.movement.set_movement_enabled(false)
 	_player.velocity = _dash_dir * DASH_SPEED
@@ -62,4 +62,4 @@ func _on_duration_timer_timeout() -> void:
 	dash_ended.emit()
 
 func _on_iframes_timer_timeout() -> void:
-	_player.is_invulnerable = false
+	_player.remove_invuln_source()

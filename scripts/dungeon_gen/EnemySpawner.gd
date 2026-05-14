@@ -16,6 +16,8 @@ var active_enemies: Array[Node] = []
 var _has_spawned: bool = false
 var _is_spawning: bool = false
 var _spawn_points: Array[Marker3D] = []
+## Decremented via EventBus.enemy_died; emits room_cleared when it reaches zero.
+var _remaining_enemies: int = 0
 var _detection_area: Area3D
 var _door: Door
 
@@ -72,6 +74,7 @@ func _begin_encounter() -> void:
 		enemy.global_position = point.global_position
 		enemy.add_to_group(&"enemies")
 		active_enemies.append(enemy)
+		_remaining_enemies += 1
 		_spawn_flash(point.global_position)
 		if spawn_delay_max > 0.0:
 			await get_tree().create_timer(randf_range(spawn_delay_min, spawn_delay_max)).timeout
@@ -83,9 +86,10 @@ func _calculate_spawn_count() -> int:
 
 func _on_enemy_died(enemy: Node3D, _position: Vector3, _xp_reward: int) -> void:
 	active_enemies.erase(enemy)
+	_remaining_enemies = max(0, _remaining_enemies - 1)
 	if _is_spawning:
 		return
-	if active_enemies.is_empty() and not is_cleared:
+	if _remaining_enemies == 0 and not is_cleared:
 		is_cleared = true
 		_door.unlock()
 		all_enemies_defeated.emit()

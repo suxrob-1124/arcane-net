@@ -63,6 +63,34 @@ func test_action_emits_signal() -> void:
 	assert_signal_emitted_with_parameters(EventBus, &"echo_acted", [&"heal"])
 
 
+func test_shield_selected_when_aoe_active() -> void:
+	var echo := _make_echo()
+	echo.mana.current_mana = 100.0
+	# HP above 30% so HealAction is inactive; boss_casting_aoe triggers ShieldAction
+	var ctx := {
+		"player": null,
+		"player_hp_ratio": 0.8,
+		"boss_casting_aoe": true,
+		"highest_hp_enemy_ratio": 0.0,
+		"highest_hp_enemy": null,
+	}
+	var action := echo._pick_action(ctx)
+	assert_not_null(action, "must pick ShieldAction when boss_casting_aoe=true and HP is healthy")
+	assert_eq(action.action_name, &"shield", "ShieldAction must win when Heal is inactive")
+
+
+func test_scan_timer_uses_tick_interval() -> void:
+	var echo := _make_echo()
+	var timer: Timer = null
+	for child in echo.get_children():
+		if child is Timer:
+			timer = child as Timer
+			break
+	assert_not_null(timer, "EchoCompanion must create a Timer child in _ready()")
+	assert_almost_eq(timer.wait_time, EchoCompanion.TICK_INTERVAL, 0.001,
+		"Timer wait_time must equal TICK_INTERVAL (0.25 s)")
+
+
 func test_inactive_when_too_many_humans() -> void:
 	SpectatorState.human_spectator_count = 3
 	var echo := _make_echo()

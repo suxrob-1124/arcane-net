@@ -2,6 +2,16 @@
 
 > Thin index for AI agents working on Arcane Net. Detailed knowledge lives in linked docs — keep this file short.
 
+## MANDATORY before starting any task
+
+These rules override default behaviour. Hooks in `.claude/settings.json` also enforce some of them at tool-call time — treat the hook block as a hard guardrail, not a suggestion.
+
+1. **Planning** — any task involving "plan / design / спланируй / задизайнь" MUST go through the `feature-plan` skill and produce a file at `.claude/plans/feat-<slug>.md` based on `.claude/templates/feature_plan.md`. Every section filled (use `N/A` for inapplicable). No custom plan structures.
+2. **Read before coding** — for changes in `scripts/combat/`, `scripts/spectator/`, `scripts/progression/`, or `scripts/dungeon_gen/`, open the matching `.claude/docs/*.md` first (`combat_and_progression.md`, `spectator_mode.md`, `architecture.md`, `dev-guide.md`).
+3. **REVIEW.md gate** — before declaring a task done, walk the [REVIEW.md](REVIEW.md) checklist and report each item explicitly.
+4. **Playtest gate** — for changes in `scripts/combat/`, `scripts/spectator/`, `scripts/ui/`, scenes, or AI: remind the user to run `/playtest-check` (≥ 30 s on Main.tscn, zero ERROR logs) before any commit.
+5. **Project memory** — `.claude/memory/` contains binding project rules (not auto-loaded by the harness). Read its index at [`.claude/memory/MEMORY.md`](.claude/memory/MEMORY.md) at the start of any non-trivial task.
+
 ## Project Overview
 
 Arcane Net — isometric action-RPG.

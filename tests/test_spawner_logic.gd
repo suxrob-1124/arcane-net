@@ -109,6 +109,60 @@ func test_spawn_quantity_formula() -> void:
 		assert_eq(spawner.active_enemies.size(), c["expected"],
 			"base=%d tier=%d pc=%d → expected %d enemies" % [c["base"], c["tier"], c["pc"], c["expected"]])
 
+func test_room_cleared_emitted_on_last_death() -> void:
+	_spawner.room_data = _make_room_data(1, 1)
+	GameState.player_count = 1
+
+	watch_signals(EventBus)
+	var player: Node3D = _make_player()
+	_spawner._on_body_entered(player)
+
+	assert_eq(_spawner._remaining_enemies, 1, "_remaining_enemies must be 1 after spawning 1 enemy")
+
+	var enemy: Node3D = _spawner.active_enemies[0]
+	EventBus.enemy_died.emit(enemy, Vector3.ZERO, 0)
+
+	assert_signal_emitted(EventBus, &"room_cleared",
+		"room_cleared must emit after the last enemy dies")
+	assert_eq(_spawner._remaining_enemies, 0, "_remaining_enemies must be 0 after last death")
+
+
+func test_room_cleared_not_emitted_while_alive() -> void:
+	_spawner.room_data = _make_room_data(2, 1)
+	GameState.player_count = 1
+
+	watch_signals(EventBus)
+	var player: Node3D = _make_player()
+	_spawner._on_body_entered(player)
+
+	assert_eq(_spawner._remaining_enemies, 2, "_remaining_enemies must be 2 after spawn")
+
+	var enemy1: Node3D = _spawner.active_enemies[0]
+	EventBus.enemy_died.emit(enemy1, Vector3.ZERO, 0)
+
+	assert_signal_not_emitted(EventBus, &"room_cleared",
+		"room_cleared must NOT emit while one enemy remains")
+	assert_eq(_spawner._remaining_enemies, 1, "_remaining_enemies must be 1 after first death")
+
+
+func test_room_cleared_emitted_once_with_guard() -> void:
+	_spawner.room_data = _make_room_data(1, 1)
+	GameState.player_count = 1
+
+	watch_signals(EventBus)
+	var player: Node3D = _make_player()
+	_spawner._on_body_entered(player)
+
+	var enemy: Node3D = _spawner.active_enemies[0]
+	EventBus.enemy_died.emit(enemy, Vector3.ZERO, 0)
+
+	# Simulate spurious second death event (e.g., double-emit from enemy script)
+	EventBus.enemy_died.emit(enemy, Vector3.ZERO, 0)
+
+	assert_signal_emit_count(EventBus, &"room_cleared", 1,
+		"room_cleared must emit exactly once even on duplicate enemy_died")
+
+
 func test_all_defeated_signal() -> void:
 	_spawner.room_data = _make_room_data(2, 1)
 	GameState.player_count = 1

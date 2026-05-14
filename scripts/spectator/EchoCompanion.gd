@@ -5,9 +5,12 @@
 class_name EchoCompanion
 extends Node
 
+const DEBUG_LOG: bool = true
+## Scan period in seconds. 4 Hz keeps Echo in sync with Glitch Pup attack cadence (~0.5 s).
+const TICK_INTERVAL: float = 0.25
+
 @onready var mana: ManaComponent = $ManaComponent
 
-@export var scan_interval: float = 0.5
 @export var min_delay: float = 0.5
 @export var max_delay: float = 1.5
 
@@ -15,6 +18,8 @@ extends Node
 var actions: Array[SpectatorAction] = []
 
 var _is_acting: bool = false
+var _aoe_alert_until_ms: int = 0
+var _last_tick_state: Dictionary = {}
 
 ## Emitted right after an action runs. Carries the action's name for UI hooks.
 signal companion_acted(action_name: String)
@@ -24,12 +29,17 @@ signal companion_personality_changed(new_personality: String)
 
 func _ready() -> void:
 	actions = [HealAction.new(), ShieldAction.new(), DamageSpikeAction.new()]
+	EventBus.enemy_telegraph_started.connect(_on_enemy_telegraph_started)
 	var timer := Timer.new()
-	timer.wait_time = scan_interval
+	timer.wait_time = TICK_INTERVAL
 	timer.one_shot = false
 	timer.timeout.connect(_on_scan)
 	add_child(timer)
 	timer.start()
+
+
+func _on_enemy_telegraph_started(_enemy: Node3D, duration: float) -> void:
+	_aoe_alert_until_ms = Time.get_ticks_msec() + int(duration * 1000.0)
 
 
 func _on_scan() -> void:
@@ -38,6 +48,28 @@ func _on_scan() -> void:
 	if not SpectatorState.echo_should_be_active():
 		return
 	var ctx := _build_context()
+	if DEBUG_LOG:
+		var tick_state: Dictionary = {
+			"mana": int(mana.current_mana),
+			"hp": "%.2f" % ctx.get("player_hp_ratio", 1.0),
+			"aoe": ctx.get("boss_casting_aoe", false),
+		}
+		if tick_state != _last_tick_state:
+			_last_tick_state = tick_state
+			print("[Echo] tick — mana=%.0f hp_ratio=%.2f aoe=%s" % [
+				mana.current_mana,
+				ctx.get("player_hp_ratio", 1.0),
+				str(ctx.get("boss_casting_aoe", false)),
+			])
+			for a in actions:
+				var can: bool = a.can_execute(ctx)
+				var afford: bool = mana.can_spend(a.mana_cost)
+				if can and afford:
+					print("  → WOULD PICK: %s (cost=%.0f)" % [a.action_name, a.mana_cost])
+				else:
+					var reason: String = "can_execute=false" if not can \
+						else "not enough mana (need %.0f have %.0f)" % [a.mana_cost, mana.current_mana]
+					print("  · SKIP %s: %s" % [a.action_name, reason])
 	var action := _pick_action(ctx)
 	if action != null:
 		_perform(action, ctx)
@@ -65,9 +97,10 @@ func _build_context() -> Dictionary:
 	return {
 		"player": player,
 		"player_hp_ratio": hp_ratio,
-		"boss_casting_aoe": false,
+		"boss_casting_aoe": Time.get_ticks_msec() < _aoe_alert_until_ms,
 		"highest_hp_enemy_ratio": highest_hp_ratio,
 		"highest_hp_enemy": highest_hp_enemy,
+		"current_mana": mana.current_mana,
 	}
 
 
@@ -85,6 +118,10 @@ func _perform(action: SpectatorAction, ctx: Dictionary) -> void:
 		_is_acting = false
 		return
 	mana.spend(action.mana_cost)
+	if DEBUG_LOG:
+		print("[Echo] EXECUTE: %s (cost=%.0f, mana_left=%.0f)" % [
+			action.action_name, action.mana_cost, mana.current_mana,
+		])
 	action.execute(ctx)
 	var name_str := String(action.action_name)
 	companion_acted.emit(name_str)

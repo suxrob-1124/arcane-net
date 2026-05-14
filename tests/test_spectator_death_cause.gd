@@ -61,9 +61,10 @@ func test_death_position_used_when_player_null() -> void:
 		"Must pick ally nearest to the death position when player is null")
 
 
-func test_game_over_fires_with_no_allies() -> void:
-	watch_signals(EventBus)
-
+func test_spectator_activates_even_with_no_allies() -> void:
 	EventBus.player_died.emit(_player_mock, &"glitch_pup", Vector3.ZERO)
 
-	assert_signal_emitted(EventBus, &"game_over")
+	assert_true(_controller._is_active,
+		"SpectatorController must activate even when no alive allies exist")
+	assert_eq(GameState.current_mode, GameState.Mode.SPECTATOR,
+		"Mode must become SPECTATOR so Echo can act")
