@@ -1,3 +1,7 @@
+## Spectator-controlled AI ally. Every `scan_interval` it inspects player / enemy state,
+## picks the first SpectatorAction whose `can_execute()` passes and mana is sufficient,
+## then performs it after a random `[min_delay, max_delay]` delay.
+## Gated by `SpectatorState.echo_should_be_active()`.
 class_name EchoCompanion
 extends Node
 
@@ -7,11 +11,14 @@ extends Node
 @export var min_delay: float = 0.5
 @export var max_delay: float = 1.5
 
+## Priority-ordered list of actions Echo can pick from. Order matters — first match wins.
 var actions: Array[SpectatorAction] = []
 
 var _is_acting: bool = false
 
+## Emitted right after an action runs. Carries the action's name for UI hooks.
 signal companion_acted(action_name: String)
+## Reserved for personality-switch events (calm / aggressive Echo modes).
 signal companion_personality_changed(new_personality: String)
 
 

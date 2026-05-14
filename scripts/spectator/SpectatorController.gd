@@ -1,3 +1,6 @@
+## Drives the death-to-spectator transition. Listens to `EventBus.player_died`,
+## freezes the camera, ghosts the player, picks the nearest live ally, and switches
+## targets on the `switch_target` input. See `.claude/docs/spectator_mode.md`.
 class_name SpectatorController
 extends Node
 
@@ -52,6 +55,7 @@ func _freeze_camera_at(pos: Vector3) -> void:
 	_camera.look_at(pos)
 
 
+## Cycles to the next live ally in `_allies_cache`. Wraps around at the end.
 func switch_target() -> void:
 	_allies_cache = find_alive_allies()
 	if _allies_cache.is_empty():
@@ -64,10 +68,12 @@ func switch_target() -> void:
 	_assign_camera_target(_current_target)
 
 
+## Reserved for free-camera spectator mode. Stub.
 func enable_free_look() -> void:
 	pass
 
 
+## Returns every Node3D in group `&"allies"` that is not in `&"enemies"` and reports `is_alive()`.
 func find_alive_allies() -> Array[Node3D]:
 	var out: Array[Node3D] = []
 	for n in get_tree().get_nodes_in_group(ALLIES_GROUP):
