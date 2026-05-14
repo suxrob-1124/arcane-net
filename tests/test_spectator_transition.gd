@@ -51,15 +51,14 @@ func test_transition_to_spectator_on_ally_present() -> void:
 	assert_signal_emitted(SpectatorState, &"spectator_mode_entered")
 
 
-func test_game_over_on_no_allies() -> void:
-	watch_signals(EventBus)
+func test_spectator_activates_without_allies() -> void:
+	watch_signals(SpectatorState)
 
 	EventBus.player_died.emit(null, &"test", Vector3.ZERO)
 
-	assert_signal_emitted(EventBus, &"game_over",
-		"game_over must fire when no alive allies present")
-	assert_ne(GameState.current_mode, GameState.Mode.SPECTATOR,
-		"Mode must NOT become SPECTATOR on game over")
+	assert_eq(GameState.current_mode, GameState.Mode.SPECTATOR,
+		"Mode must become SPECTATOR even with no living allies so Echo can still act")
+	assert_signal_emitted(SpectatorState, &"spectator_mode_entered")
 
 
 func test_camera_target_assignment() -> void:
