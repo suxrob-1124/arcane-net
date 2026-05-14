@@ -31,10 +31,18 @@ desktop.ini
 # Editors / IDE
 .idea/
 .vscode/
-.claude/
 *.swp
 *.swo
 *~
+
+# Claude Code: track shared project artefacts (docs/skills/templates/settings.json);
+# keep personal state (memory, plans, hooks, prompts, local overrides) local-only.
+.claude/*
+!.claude/docs/
+!.claude/skills/
+!.claude/templates/
+!.claude/hooks/
+!.claude/settings.json
 
 # Logs
 *.log
