@@ -64,11 +64,17 @@ func _on_scan() -> void:
 			for a in actions:
 				var can: bool = a.can_execute(ctx)
 				var afford: bool = mana.can_spend(a.mana_cost)
-				if can and afford:
+				var off_cd: bool = a.is_off_cooldown()
+				if can and afford and off_cd:
 					print("  → WOULD PICK: %s (cost=%.0f)" % [a.action_name, a.mana_cost])
 				else:
-					var reason: String = "can_execute=false" if not can \
-						else "not enough mana (need %.0f have %.0f)" % [a.mana_cost, mana.current_mana]
+					var reason: String
+					if not off_cd:
+						reason = "on cooldown"
+					elif not can:
+						reason = "can_execute=false"
+					else:
+						reason = "not enough mana (need %.0f have %.0f)" % [a.mana_cost, mana.current_mana]
 					print("  · SKIP %s: %s" % [a.action_name, reason])
 	var action := _pick_action(ctx)
 	if action != null:
@@ -100,12 +106,13 @@ func _build_context() -> Dictionary:
 		"boss_casting_aoe": Time.get_ticks_msec() < _aoe_alert_until_ms,
 		"highest_hp_enemy_ratio": highest_hp_ratio,
 		"highest_hp_enemy": highest_hp_enemy,
-		"current_mana": mana.current_mana,
 	}
 
 
 func _pick_action(ctx: Dictionary) -> SpectatorAction:
 	for action in actions:
+		if not action.is_off_cooldown():
+			continue
 		if mana.can_spend(action.mana_cost) and action.can_execute(ctx):
 			return action
 	return null
@@ -123,6 +130,7 @@ func _perform(action: SpectatorAction, ctx: Dictionary) -> void:
 			action.action_name, action.mana_cost, mana.current_mana,
 		])
 	action.execute(ctx)
+	action.mark_used()
 	var name_str := String(action.action_name)
 	companion_acted.emit(name_str)
 	EventBus.echo_acted.emit(action.action_name)
