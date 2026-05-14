@@ -15,6 +15,7 @@ extends Node
 var actions: Array[SpectatorAction] = []
 
 var _is_acting: bool = false
+var _aoe_alert_until_ms: int = 0
 
 ## Emitted right after an action runs. Carries the action's name for UI hooks.
 signal companion_acted(action_name: String)
@@ -24,12 +25,17 @@ signal companion_personality_changed(new_personality: String)
 
 func _ready() -> void:
 	actions = [HealAction.new(), ShieldAction.new(), DamageSpikeAction.new()]
+	EventBus.enemy_telegraph_started.connect(_on_enemy_telegraph_started)
 	var timer := Timer.new()
 	timer.wait_time = scan_interval
 	timer.one_shot = false
 	timer.timeout.connect(_on_scan)
 	add_child(timer)
 	timer.start()
+
+
+func _on_enemy_telegraph_started(_enemy: Node3D, duration: float) -> void:
+	_aoe_alert_until_ms = Time.get_ticks_msec() + int(duration * 1000.0)
 
 
 func _on_scan() -> void:
@@ -65,7 +71,7 @@ func _build_context() -> Dictionary:
 	return {
 		"player": player,
 		"player_hp_ratio": hp_ratio,
-		"boss_casting_aoe": false,
+		"boss_casting_aoe": Time.get_ticks_msec() < _aoe_alert_until_ms,
 		"highest_hp_enemy_ratio": highest_hp_ratio,
 		"highest_hp_enemy": highest_hp_enemy,
 	}

@@ -10,7 +10,7 @@ extends CharacterBody3D
 @onready var health: HealthComponent = $HealthComponent
 @onready var attack: AttackComponent = get_node_or_null(^"AttackComponent") as AttackComponent
 
-## Set true by DashComponent during iframes; consumed by `take_damage()` to skip damage.
+## Derived from `_invuln_sources`; true while any source (dash iframes, shield) is active.
 var is_invulnerable: bool = false
 ## Set true by DashComponent during a dash; MovementComponent honours this flag.
 var is_dashing: bool = false
@@ -18,6 +18,7 @@ var is_dashing: bool = false
 var is_ghost: bool = false
 
 var _death_cause: StringName = &"unknown"
+var _invuln_sources: int = 0
 
 
 func _ready() -> void:
@@ -34,6 +35,19 @@ func take_damage(amount: int, source: Node = null) -> void:
 		_death_cause = source.data.enemy_id
 	health.take_damage(amount, source)
 	Hitstop.request(0.05)
+
+
+## Registers one invulnerability source. Player becomes invulnerable on the first call.
+func add_invuln_source() -> void:
+	_invuln_sources += 1
+	is_invulnerable = true
+
+
+## Releases one invulnerability source. Invulnerability ends when all sources are removed.
+func remove_invuln_source() -> void:
+	_invuln_sources = max(0, _invuln_sources - 1)
+	if _invuln_sources == 0:
+		is_invulnerable = false
 
 
 ## Heals by `amount`. Forwarded directly to HealthComponent.

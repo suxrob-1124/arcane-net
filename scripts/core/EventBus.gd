@@ -26,6 +26,9 @@ signal echo_acted(action_name: StringName)
 ## Emitted when the run ends with no continue option available.
 signal game_over()
 
+## Emitted when an enemy begins its attack telegraph. [duration] matches the telegraph timer length.
+signal enemy_telegraph_started(enemy: Node3D, duration: float)
+
 const DEBUG_LOG: bool = false
 
 
