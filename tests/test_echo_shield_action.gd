@@ -36,6 +36,28 @@ func test_shield_action_cannot_execute_when_no_aoe() -> void:
 		"ShieldAction must NOT execute when boss_casting_aoe is false")
 
 
+func test_shield_suppressed_when_hp_below_floor() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": true,
+		"player_hp_ratio": 0.40,
+	}
+	assert_false(action.can_execute(ctx),
+		"ShieldAction must be suppressed below HP_FLOOR so mana is reserved for HealAction")
+
+
+func test_shield_fires_when_aoe_and_hp_above_floor() -> void:
+	var action: ShieldAction = ShieldAction.new()
+	var ctx: Dictionary = {
+		"player": PlayerMock.new(),
+		"boss_casting_aoe": true,
+		"player_hp_ratio": 0.80,
+	}
+	assert_true(action.can_execute(ctx),
+		"ShieldAction must execute when aoe is active and HP is safe")
+
+
 func test_shield_action_sets_invulnerable() -> void:
 	var action: ShieldAction = ShieldAction.new()
 	var player: PlayerMock = PlayerMock.new()

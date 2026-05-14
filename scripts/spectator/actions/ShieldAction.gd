@@ -5,6 +5,8 @@ extends SpectatorAction
 
 ## Seconds the invulnerability window lasts after the shield is applied.
 const SHIELD_DURATION: float = 1.5
+## HP ratio below which Shield is suppressed so mana is reserved for HealAction.
+const HP_FLOOR: float = 0.50
 
 
 func _init() -> void:
@@ -12,9 +14,11 @@ func _init() -> void:
 	mana_cost = 60.0
 
 
-## Returns true while boss_casting_aoe is set in [ctx] (driven by enemy_telegraph_started).
+## Returns true while boss_casting_aoe is active and HP is above HP_FLOOR.
+## Suppressed at low HP so mana stays available for HealAction.
 func can_execute(ctx: Dictionary) -> bool:
-	return ctx.get("boss_casting_aoe", false)
+	return ctx.get("boss_casting_aoe", false) \
+		and ctx.get("player_hp_ratio", 1.0) >= HP_FLOOR
 
 
 ## Applies invulnerability to the player for SHIELD_DURATION seconds via add_invuln_source.
